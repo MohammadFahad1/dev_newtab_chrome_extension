@@ -1,8 +1,6 @@
-# Fahad's New Tab
+# Dev's New Tab
 
 A beautiful, personalized Chrome New Tab extension for Md. Fahad Monshi.
-
-![Preview](https://via.placeholder.com/800x500/0a0a0a/4ade80?text=Fahad%27s+New+Tab+Preview)
 
 ## ✨ Features
 
@@ -16,8 +14,6 @@ A beautiful, personalized Chrome New Tab extension for Md. Fahad Monshi.
 - **Fast & Lightweight** — Instant loading
 
 ## 🎨 Preview
-
-![New Tab Preview](https://via.placeholder.com/800x500/0a0a0a/10b981?text=Beautiful+New+Tab+Screenshot)
 
 *(Replace with actual screenshot once you have one)*
 
@@ -33,5 +29,3 @@ A beautiful, personalized Chrome New Tab extension for Md. Fahad Monshi.
 6. Open a new tab — enjoy your personal dashboard! 🎉
 
 ### Method 2: Install from Chrome Web Store (Coming Soon)
-
-## 📁 Project Structure
