@@ -15,7 +15,7 @@ function updateClock() {
   const timeEl = document.getElementById('live-time');
   if (!timeEl) return;
   setInterval(() => {
-    const now = new Date();
+    const now = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Dhaka" }));
     let hours = now.getHours();
     let minutes = now.getMinutes();
     const ampm = hours >= 12 ? 'PM' : 'AM';
@@ -29,7 +29,7 @@ function setGreeting() {
   const greetingEl = document.getElementById('greeting');
   if (!greetingEl) return;
   
-  const hour = new Date().getHours();
+  const hour = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Dhaka" })).getHours();
   let greeting = '';
   if (hour < 5) greeting = "Good night, Fahad.";
   else if (hour < 12) greeting = "Good morning, Fahad.";
