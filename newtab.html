@@ -131,13 +131,20 @@
 
     <!-- Task Manager Card -->
     <div class="glass-card todo-card" style="min-height: 100vh;">
-      <div class="todo-title">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-        Tasks
+      <div class="todo-header-row">
+        <div class="todo-title" style="margin-bottom: 0;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          Tasks
+        </div>
+        <button id="manage-clients-btn" class="icon-btn" title="Manage Clients">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        </button>
       </div>
       
       <div class="todo-input-container">
-        <input type="text" id="todo-client" class="todo-client-input" placeholder="Client" autocomplete="off" />
+        <select id="todo-client" class="todo-client-input">
+          <option value="">Select Client</option>
+        </select>
         <input type="text" id="todo-task" class="todo-input" placeholder="What needs to be done?" autocomplete="off" />
         <button type="button" id="add-todo-btn" class="add-todo-btn" title="Add Task">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
@@ -151,6 +158,47 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- Clients Modal -->
+  <div id="clients-modal" class="modal-overlay hidden">
+    <div class="glass-card modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title">Manage Clients</h2>
+        <button id="close-clients-btn" class="icon-btn">&times;</button>
+      </div>
+      
+      <div class="client-form-container">
+        <input type="hidden" id="client-id" />
+        <div style="display: flex; gap: 12px; width: 100%;">
+          <input type="text" id="client-name" class="modal-input" placeholder="Client Name" autocomplete="off" />
+          <input type="number" id="client-amount" class="modal-input" placeholder="Amount ($)" autocomplete="off" />
+        </div>
+        <div style="display: flex; gap: 12px; width: 100%;">
+          <input type="date" id="client-date" class="modal-input" title="Delivery Date (Optional)" />
+          <select id="client-status" class="modal-input" style="cursor: pointer;">
+            <option value="" style="color: #25D366">No Status</option>
+            <option value="Pending" style="color: #000000">Pending</option>
+            <option value="In Progress" style="color: #000000">In Progress</option>
+            <option value="Delivered" style="color: #000000">Delivered</option>
+          </select>
+        </div>
+        <input type="text" id="client-note" class="modal-input" placeholder="Note (Optional)" style="width: 100%;" autocomplete="off" />
+        <div style="display: flex; gap: 12px; width: 100%; align-items: center; margin-top: 4px;">
+          <label class="modal-checkbox-label" style="flex: 1;">
+            <input type="checkbox" id="client-active" class="todo-checkbox" checked> Active
+          </label>
+          <button type="button" id="cancel-client-btn" class="icon-btn hidden" style="width: auto; padding: 0 12px; font-size: 14px;">Cancel</button>
+          <button type="button" id="save-client-btn" class="add-todo-btn" style="width: auto; padding: 10px 20px; font-weight: 600;">Save</button>
+        </div>
+      </div>
+
+      <div class="clients-list-wrapper">
+        <div class="clients-list" id="clients-list">
+          <!-- Client items will be populated here by JS -->
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="newtab.js"></script>

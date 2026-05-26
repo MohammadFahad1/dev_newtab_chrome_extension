@@ -115,7 +115,7 @@ body {
 
 /* Todo System specific overrides */
 .todo-card:hover { box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.6), 0 0 40px -10px rgba(59, 130, 246, 0.25); border-color: rgba(59, 130, 246, 0.4); }
-.todo-title { font-family: var(--font-display); font-size: 28px; font-weight: 600; display: flex; align-items: center; gap: 12px; margin-bottom: 32px; letter-spacing: -0.5px;}
+.todo-title { font-family: var(--font-display); font-size: 28px; font-weight: 600; display: flex; align-items: center; gap: 12px; letter-spacing: -0.5px;}
 .todo-title svg { stroke: #3b82f6; }
 
 .todo-input-container { display: flex; gap: 12px; margin-bottom: 32px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); }
@@ -153,3 +153,182 @@ body {
 .todo-btn-icon:hover { background: #ef4444; color: white; transform: scale(1.1); }
 
 @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+.hidden { display: none !important; }
+
+/* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+.modal-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.modal-card {
+  width: 90%;
+  max-width: 600px;
+  max-height: 85vh;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 600;
+}
+.icon-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 24px;
+}
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.client-form-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+  background: rgba(0,0,0,0.3);
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.05);
+  align-items: center;
+}
+.modal-input {
+  flex: 1;
+  min-width: 150px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid transparent;
+  padding: 12px 16px;
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  outline: none;
+  border-radius: 10px;
+  transition: all 0.3s;
+}
+.modal-input:focus {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+.modal-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.clients-list-wrapper {
+  flex: 1;
+  position: relative;
+  min-height: 250px;
+  overflow: hidden;
+}
+.clients-list {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-right: 8px;
+}
+.clients-list::-webkit-scrollbar { width: 6px; }
+.clients-list::-webkit-scrollbar-track { background: transparent; }
+.clients-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+.clients-list::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+.client-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.04);
+  padding: 16px;
+  border-radius: 16px;
+  transition: all 0.2s;
+}
+.client-item:hover {
+  background: rgba(255,255,255,0.05);
+}
+.client-item.inactive {
+  opacity: 0.5;
+}
+.client-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.client-name-display {
+  font-weight: 500;
+  font-size: 16px;
+  color: #f3f4f6;
+}
+.client-amount-display {
+  font-size: 13px;
+  color: #10b981;
+  font-family: monospace;
+}
+.client-actions {
+  display: flex;
+  gap: 8px;
+}
+.client-btn-edit {
+  background: rgba(59, 130, 246, 0.1);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+.client-btn-edit:hover { background: #3b82f6; color: white; }
+
+.todo-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+/* Make select look like the inputs */
+select.todo-client-input {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%239ca3af%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px top 50%;
+  background-size: 10px auto;
+  padding-right: 32px;
+  cursor: pointer;
+}
+select.todo-client-input option {
+  background: var(--bg-primary);
+  color: #fff;
+}
