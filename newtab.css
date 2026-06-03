@@ -176,8 +176,8 @@ body {
 }
 .modal-card {
   width: 90%;
-  max-width: 600px;
-  max-height: 85vh;
+  max-width: 650px;
+  height: 85vh;
   padding: 32px;
   display: flex;
   flex-direction: column;

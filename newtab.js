@@ -183,6 +183,8 @@ if (todoClientInput) {
 const clientsModal = document.getElementById('clients-modal');
 const manageClientsBtn = document.getElementById('manage-clients-btn');
 const closeClientsBtn = document.getElementById('close-clients-btn');
+const toggleClientFormBtn = document.getElementById('toggle-client-form-btn');
+const clientFormContainer = document.getElementById('client-form-container');
 const clientsList = document.getElementById('clients-list');
 const saveClientBtn = document.getElementById('save-client-btn');
 const cancelClientBtn = document.getElementById('cancel-client-btn');
@@ -299,12 +301,26 @@ function resetClientForm() {
   if(clientNoteInput) clientNoteInput.value = '';
   if(clientActiveCheck) clientActiveCheck.checked = true;
   if(cancelClientBtn) cancelClientBtn.classList.add('hidden');
+  if(clientFormContainer) clientFormContainer.classList.add('hidden');
 }
 
 if (manageClientsBtn) {
   manageClientsBtn.addEventListener('click', () => {
     clientsModal.classList.remove('hidden');
     renderClients();
+  });
+}
+
+if (toggleClientFormBtn) {
+  toggleClientFormBtn.addEventListener('click', () => {
+    if (clientFormContainer) {
+      if (clientFormContainer.classList.contains('hidden')) {
+        clientFormContainer.classList.remove('hidden');
+        if (clientNameInput) clientNameInput.focus();
+      } else {
+        resetClientForm();
+      }
+    }
   });
 }
 
@@ -395,6 +411,7 @@ if (clientsList) {
         if(clientNoteInput) clientNoteInput.value = client.note || '';
         clientActiveCheck.checked = client.active;
         cancelClientBtn.classList.remove('hidden');
+        if(clientFormContainer) clientFormContainer.classList.remove('hidden');
       }
     }
   });

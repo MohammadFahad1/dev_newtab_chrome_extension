@@ -165,10 +165,15 @@
     <div class="glass-card modal-card">
       <div class="modal-header">
         <h2 class="modal-title">Manage Clients</h2>
-        <button id="close-clients-btn" class="icon-btn">&times;</button>
+        <div style="display: flex; gap: 8px;">
+          <button id="toggle-client-form-btn" class="icon-btn" title="Add Client">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          </button>
+          <button id="close-clients-btn" class="icon-btn">&times;</button>
+        </div>
       </div>
       
-      <div class="client-form-container">
+      <div id="client-form-container" class="client-form-container hidden">
         <input type="hidden" id="client-id" />
         <div style="display: flex; gap: 12px; width: 100%;">
           <input type="text" id="client-name" class="modal-input" placeholder="Client Name" autocomplete="off" />
