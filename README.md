@@ -44,7 +44,3 @@ A premium, highly personalized, and fully functional Chrome New Tab extension da
 - **Adding a Task**: Type into the "What needs to be done?" input on the right side of the screen and press Enter (or click the add icon). You can optionally associate it with a client by selecting one from the dropdown.
 - **Managing Clients**: Click the user/client icon in the Tasks header to open the Clients Modal. From there, click the plus icon to reveal the form to add a new client (along with pricing, dates, notes, and status).
 - **Social Links**: Simply click on any of the beautifully designed social tiles on the left side to navigate directly to those platforms.
-
-## 📝 License
-
-This project is open-source and available under the [MIT License](LICENSE).
