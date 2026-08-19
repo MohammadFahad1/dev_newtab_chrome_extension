@@ -332,3 +332,54 @@ select.todo-client-input option {
   background: var(--bg-primary);
   color: #fff;
 }
+
+/* Drag and Drop & Task Completion Time Styles */
+.drag-handle {
+  cursor: grab;
+  color: #4b5563;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 6px;
+  transition: color 0.2s, background 0.2s;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.drag-handle:hover {
+  color: #9ca3af;
+  background: rgba(255, 255, 255, 0.05);
+}
+.todo-item:active .drag-handle,
+.client-item:active .drag-handle {
+  cursor: grabbing;
+}
+
+.todo-item.dragging,
+.client-item.dragging {
+  opacity: 0.35;
+  background: rgba(59, 130, 246, 0.12) !important;
+  border-color: rgba(59, 130, 246, 0.5) !important;
+}
+
+.todo-item.drag-over-top,
+.client-item.drag-over-top {
+  border-top: 2px solid #3b82f6 !important;
+}
+
+.todo-item.drag-over-bottom,
+.client-item.drag-over-bottom {
+  border-bottom: 2px solid #3b82f6 !important;
+}
+
+.todo-completed-time {
+  font-size: 12px;
+  color: #10b981;
+  margin-top: 2px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0.9;
+}
+

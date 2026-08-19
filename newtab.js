@@ -77,6 +77,101 @@ function saveTodos() {
   }
 }
 
+// Helper for formatting completion date & time
+function formatDateTime(date = new Date()) {
+  const now = new Date(date.toLocaleString("en-US", { timeZone: "Asia/Dhaka" }));
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const month = months[now.getMonth()];
+  const day = now.getDate();
+  const year = now.getFullYear();
+  let hours = now.getHours();
+  const minutes = now.getMinutes().toString().padStart(2, '0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12 || 12;
+  return `${month} ${day}, ${year} at ${hours}:${minutes} ${ampm}`;
+}
+
+// Drag and Drop Helper for reordering arrays
+function setupDragAndDrop(containerEl, getArray, saveArray, renderFunc, itemSelector) {
+  if (!containerEl) return;
+  let draggedId = null;
+
+  containerEl.addEventListener('dragstart', (e) => {
+    const item = e.target.closest(itemSelector);
+    if (!item) return;
+    draggedId = parseInt(item.getAttribute('data-id'), 10);
+    e.dataTransfer.setData('text/plain', draggedId.toString());
+    e.dataTransfer.effectAllowed = 'move';
+    item.classList.add('dragging');
+  });
+
+  containerEl.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    const item = e.target.closest(itemSelector);
+    if (!item) return;
+
+    containerEl.querySelectorAll(itemSelector).forEach(el => {
+      el.classList.remove('drag-over-top', 'drag-over-bottom');
+    });
+
+    const rect = item.getBoundingClientRect();
+    const midY = rect.top + rect.height / 2;
+    if (e.clientY < midY) {
+      item.classList.add('drag-over-top');
+    } else {
+      item.classList.add('drag-over-bottom');
+    }
+  });
+
+  containerEl.addEventListener('dragleave', (e) => {
+    const item = e.target.closest(itemSelector);
+    if (item) {
+      item.classList.remove('drag-over-top', 'drag-over-bottom');
+    }
+  });
+
+  containerEl.addEventListener('dragend', () => {
+    containerEl.querySelectorAll(itemSelector).forEach(el => {
+      el.classList.remove('dragging', 'drag-over-top', 'drag-over-bottom');
+    });
+  });
+
+  containerEl.addEventListener('drop', (e) => {
+    e.preventDefault();
+    containerEl.querySelectorAll(itemSelector).forEach(el => {
+      el.classList.remove('dragging', 'drag-over-top', 'drag-over-bottom');
+    });
+
+    const dropTarget = e.target.closest(itemSelector);
+    if (!dropTarget || draggedId === null) return;
+
+    const dropId = parseInt(dropTarget.getAttribute('data-id'), 10);
+    if (draggedId === dropId) return;
+
+    const arr = getArray();
+    const fromIndex = arr.findIndex(i => i.id === draggedId);
+    let toIndex = arr.findIndex(i => i.id === dropId);
+
+    if (fromIndex === -1 || toIndex === -1) return;
+
+    const rect = dropTarget.getBoundingClientRect();
+    const midY = rect.top + rect.height / 2;
+    if (e.clientY >= midY) {
+      toIndex++;
+    }
+    if (fromIndex < toIndex) {
+      toIndex--;
+    }
+
+    const [movedItem] = arr.splice(fromIndex, 1);
+    arr.splice(toIndex, 0, movedItem);
+
+    saveArray();
+    renderFunc();
+    draggedId = null;
+  });
+}
+
 function renderTodos() {
   if (!todoList) return;
   todoList.innerHTML = '';
@@ -95,12 +190,23 @@ function renderTodos() {
   sortedTodos.forEach(todo => {
     const div = document.createElement('div');
     div.className = `todo-item ${todo.completed ? 'completed' : ''}`;
+    div.setAttribute('draggable', 'true');
+    div.setAttribute('data-id', todo.id);
     
     div.innerHTML = `
+      <div class="drag-handle" title="Drag to reorder">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>
+      </div>
       <input type="checkbox" class="todo-checkbox" data-action="toggle" data-id="${todo.id}" ${todo.completed ? 'checked' : ''}>
       <div class="todo-content">
         ${todo.client ? `<span class="todo-client-badge">${todo.client}</span>` : ''}
         <span class="todo-text">${todo.text}</span>
+        ${todo.completed && todo.completedAt ? `
+          <div class="todo-completed-time">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            Completed: ${todo.completedAt}
+          </div>
+        ` : ''}
       </div>
       <div class="todo-actions">
         <button class="todo-btn-icon" data-action="delete" data-id="${todo.id}" title="Delete Task">
@@ -133,6 +239,11 @@ if (todoList) {
       const todo = todos.find(t => t.id === id);
       if (todo) {
         todo.completed = target.checked;
+        if (todo.completed) {
+          todo.completedAt = formatDateTime();
+        } else {
+          todo.completedAt = null;
+        }
         saveTodos();
         renderTodos();
       }
@@ -232,6 +343,8 @@ function renderClients() {
     clients.forEach(client => {
       const div = document.createElement('div');
       div.className = `client-item ${!client.active ? 'inactive' : ''}`;
+      div.setAttribute('draggable', 'true');
+      div.setAttribute('data-id', client.id);
       
       let extraHtml = '';
       if (client.status) {
@@ -244,9 +357,15 @@ function renderClients() {
         const delDate = new Date(client.date);
         const diffTime = delDate - today;
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        let daysText = diffDays > 0 ? `${diffDays} days left` : (diffDays === 0 ? 'Due today' : `${Math.abs(diffDays)} days overdue`);
-        let daysColor = diffDays >= 0 ? '#9ca3af' : '#ef4444';
-        extraHtml += `<span style="font-size:11px; color:${daysColor};"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px; margin-right:2px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>${daysText}</span>`;
+        
+        if (client.status === 'Delivered') {
+          const formattedDate = delDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+          extraHtml += `<span style="font-size:11px; color:#10b981;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px; margin-right:2px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>Delivered (${formattedDate})</span>`;
+        } else {
+          let daysText = diffDays > 0 ? `${diffDays} days left` : (diffDays === 0 ? 'Due today' : `${Math.abs(diffDays)} days overdue`);
+          let daysColor = diffDays >= 0 ? '#9ca3af' : '#ef4444';
+          extraHtml += `<span style="font-size:11px; color:${daysColor};"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px; margin-right:2px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>${daysText}</span>`;
+        }
       }
       
       let noteHtml = '';
@@ -255,7 +374,10 @@ function renderClients() {
       }
       
       div.innerHTML = `
-        <div class="client-info">
+        <div class="drag-handle" title="Drag to reorder" style="margin-right: 8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>
+        </div>
+        <div class="client-info" style="flex:1;">
           <div style="display:flex; align-items:center; flex-wrap:wrap; gap:4px;">
             <span class="client-name-display">${client.name} ${!client.active ? '(Inactive)' : ''}</span>
             <span class="client-amount-display" style="margin-left:8px;">$${client.amount || 0}</span>
@@ -423,4 +545,6 @@ document.addEventListener('DOMContentLoaded', () => {
   setGreeting();
   renderClients();
   renderTodos();
+  setupDragAndDrop(todoList, () => todos, saveTodos, renderTodos, '.todo-item');
+  setupDragAndDrop(clientsList, () => clients, saveClients, renderClients, '.client-item');
 });
