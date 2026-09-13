@@ -345,31 +345,67 @@ select.todo-client-input option {
   transition: color 0.2s, background 0.2s;
   flex-shrink: 0;
   margin-top: 2px;
+  touch-action: none;
+  user-select: none;
 }
 .drag-handle:hover {
   color: #9ca3af;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.08);
 }
 .todo-item:active .drag-handle,
-.client-item:active .drag-handle {
+.client-item:active .drag-handle,
+.drag-handle.grabbing {
   cursor: grabbing;
 }
 
-.todo-item.dragging,
-.client-item.dragging {
-  opacity: 0.35;
-  background: rgba(59, 130, 246, 0.12) !important;
-  border-color: rgba(59, 130, 246, 0.5) !important;
+/* Floating Drag Preview */
+.drag-preview {
+  position: fixed !important;
+  z-index: 10000 !important;
+  pointer-events: none !important;
+  animation: none !important;
+  transition: none !important;
+  opacity: 0.95 !important;
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.5), 0 0 25px rgba(59, 130, 246, 0.35) !important;
+  border-color: rgba(59, 130, 246, 0.6) !important;
+  background: rgba(17, 24, 39, 0.95) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  will-change: transform;
 }
 
-.todo-item.drag-over-top,
-.client-item.drag-over-top {
-  border-top: 2px solid #3b82f6 !important;
+/* Animated Space Placeholder */
+.drag-placeholder {
+  box-sizing: border-box;
+  border: 2px dashed rgba(59, 130, 246, 0.6);
+  background: rgba(59, 130, 246, 0.08);
+  border-radius: 20px;
+  transition: height 0.2s cubic-bezier(0.2, 0, 0, 1), transform 0.2s cubic-bezier(0.2, 0, 0, 1);
+  pointer-events: none;
+  animation: pulsePlaceholder 1.5s infinite alternate ease-in-out;
+  flex-shrink: 0;
 }
 
-.todo-item.drag-over-bottom,
-.client-item.drag-over-bottom {
-  border-bottom: 2px solid #3b82f6 !important;
+@keyframes pulsePlaceholder {
+  from { border-color: rgba(59, 130, 246, 0.4); background: rgba(59, 130, 246, 0.04); }
+  to { border-color: rgba(59, 130, 246, 0.8); background: rgba(59, 130, 246, 0.12); }
+}
+
+.todo-item, .client-item {
+  transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1), background 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.todo-item.is-dragging-original,
+.client-item.is-dragging-original {
+  opacity: 0 !important;
+  position: absolute !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
 }
 
 .todo-completed-time {
